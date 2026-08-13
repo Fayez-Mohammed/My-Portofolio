@@ -7,15 +7,18 @@ interface Point {
 
 const SmokeyCursor = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    // 🎨 يمكنك تغيير لون المؤشر والذيل من هنا فقط (بصيغة RGB)
-    // أزرق نيون/سيان: "0, 225, 255"
-    // أرجواني/بنفسجي: "168, 85, 247"
-    // أخضر نيون: "34, 197, 94"
-    // أصفر نيون: "234, 179, 8"
     const cursorColor = "0, 225, 255";
 
     useEffect(() => {
+        // فحص ما إذا كان الجهاز يعمل باللمس (موبايل أو تابلت) أو شاشته صغيرة
+        const isTouchDevice =
+            "ontouchstart" in window ||
+            navigator.maxTouchPoints > 0 ||
+            window.matchMedia("(pointer: coarse)").matches ||
+            window.innerWidth < 1024; // إخفاء على أجهزة التابلت والموبايل (أقل من 1024px)
+
+        if (isTouchDevice) return;
+
         const canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -66,7 +69,6 @@ const SmokeyCursor = () => {
                 const alpha = Math.pow(ratio, 0.4);
 
                 ctx.beginPath();
-                // 🔹 استخدام المتغير لتغيير اللون بدلاً من الأبيض الثابت
                 ctx.fillStyle = `rgba(${cursorColor}, ${alpha})`;
                 ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
                 ctx.fill();
@@ -87,7 +89,7 @@ const SmokeyCursor = () => {
     return (
         <canvas
             ref={canvasRef}
-            className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
+            className="pointer-events-none fixed inset-0 z-50 overflow-hidden hidden lg:block"
         />
     );
 };
