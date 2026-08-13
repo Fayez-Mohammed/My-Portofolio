@@ -255,3 +255,6 @@
 #webring {
     display: none !important;
 }
+body {
+    cursor: none;
+}
