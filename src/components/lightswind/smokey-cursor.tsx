@@ -10,13 +10,12 @@ const SmokeyCursor = () => {
     const cursorColor = "0, 225, 255";
 
     useEffect(() => {
-        // فحص ما إذا كان الجهاز يعمل باللمس (موبايل أو تابلت) أو شاشته صغيرة
+        // فحص نوع الجهاز فقط (هل هو جهاز لمس حقيقي كالموبايل والتابلت؟)
         const isTouchDevice =
-            "ontouchstart" in window ||
-            navigator.maxTouchPoints > 0 ||
-            window.matchMedia("(pointer: coarse)").matches ||
-            window.innerWidth < 1024; // إخفاء على أجهزة التابلت والموبايل (أقل من 1024px)
+            ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
+            window.matchMedia("(pointer: coarse)").matches;
 
+        // إذا كان الجهاز موبايل/تابلت لمس حقيقي، نوقف المؤشر
         if (isTouchDevice) return;
 
         const canvas = canvasRef.current;
@@ -89,7 +88,7 @@ const SmokeyCursor = () => {
     return (
         <canvas
             ref={canvasRef}
-            className="pointer-events-none fixed inset-0 z-50 overflow-hidden hidden lg:block"
+            className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
         />
     );
 };
